@@ -1,27 +1,31 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Apr 12 15:29:44 2021
-
-@author: Mustafa
-"""
 
 import numpy as np
-A = {'top': (0,-1), 'right': (1,0), 'down': (0,1), 'left': (-1, 0)}
-terminal_s = [(0,0), (4,4)]
-S = s = None
-s = None
 
-def reset():
-    S = np.zeros((4, 4))
-    s = S[1,1]
-    return state
-
-
-def step(action):
-    s_prime_i = np.add(state, action)
-    if states.min() < next_state > states.max():
-        reward = -1
-    elif next_state == 0 or next_state == 15:
-        reward = 1
+class Gridworld: 
+    terminal_s = [(0,0), (4,4)]
     
-    return 0,3,4,5 
+    def __init__(self):
+        # left top right down
+        self.A = [(0,-1), (-1,0), (0,1), (1,0)]
+        
+    def reset(self):
+        self.S = np.reshape(np.arange(16),(4,4))
+        self.s = [1,1]
+        return self.S, self.s
+
+
+    def step(self, s, a):
+        self.s = s or self.s
+        spi = np.add(self.s, a).astype(int)
+        r = -1
+        if 0 <= spi[0] < 4 and 0 <= spi[1] < 4:
+            self.s = spi
+        else:
+            self.s = s
+        return self.s, r
+    
+    
+    def is_terminal_s(self, spi):
+        return spi[0] == 0 and spi[1] == 0 or \
+                spi[0] == 3 and spi[1] == 3
