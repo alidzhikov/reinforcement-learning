@@ -3,32 +3,41 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 GOAL = 100
-S = np.arange(GOAL)
-V = np.zeros(GOAL)
+S = np.arange(GOAL + 1)
+V = np.zeros(GOAL + 1)
 V[len(V) - 1] = 1
-policy = np.zeros(GOAL)
+policy = np.zeros(GOAL + 1)
 ph = 0.4
-theta = 0.1
+theta = 0.00000001
 fig, axs = plt.subplots(2)
+sweep = 0
 while True:
     delta = 0
-    for i, s in enumerate(S):
-        if not 0 < i < GOAL:
-            continue
-        v = V[i]
+    sweep += 1
+    for s in S[1:GOAL]:
+        v = V[s]
         action_values = []
-        actions = np.arange(1, (s + 1 if s < 50 else GOAL - s))
+        actions = np.arange(min(s, GOAL-s)+1)
         for a in actions:
-            r = 0            
             action_values.append(
                 ph * V[a + s] + (1 - ph) * V[s - a])
-        # policy[s-1] = np.argmax(action_values)
-        V[i] = np.max(action_values)
-        delta = max(delta, np.abs(v - V[i]))
+        V[s] = np.max(action_values)
+        delta = max(delta, np.abs(v - V[s]))
     print(delta)
     
     fig.suptitle('value F when ph = ' + str(ph))
-    axs[0].plot(S,V)
+    axs[0].plot(S,V, label='sweep {}'.format(sweep))
     if delta < theta:
+        print('sweep {}'.format(sweep))
         break;
+
+for s in S[1:GOAL]:
+    actions = np.arange(min(s, GOAL - s) + 1)
+    action_returns = []
+    for a in actions:
+        action_returns.append(
+            ph * V[s + a] + (1 - ph) * V[s - a])
+    policy[s] = actions[np.argmax(np.round(action_returns[1:], 5)) + 1]
+
+
 axs[1].plot(S, policy)
