@@ -1,0 +1,15 @@
+here we do not assume complete knowledge of the environment but only experience(real or simulated)
+
+model?
+the model need only generate sample transitions, not the complete probability distributions of all possible
+transitions 
+
+Only on the completion of an episode are value estimates and policies changed.
+MC methods can thus be incremental in an episode-by-episode sense, but not in
+a step-by-step (online) sense. 
+
+average rewards for each action. The main di↵erence is that now there are multiple states, each acting like a di↵erent
+bandit problem (like an associative-search or contextual bandit)
+
+we computed value functions from knowledge
+of the MDP, here we learn value functions from sample returns with the MDP
