@@ -13,3 +13,12 @@ bandit problem (like an associative-search or contextual bandit)
 
 we computed value functions from knowledge
 of the MDP, here we learn value functions from sample returns with the MDP
+
+update estimates on the basis of other estimates. We call this general idea bootstrapping MC doesnt bootstrap
+
+first-visit MC method estimates v⇡(s) as the average of the returns following
+first visits to s
+
+On-policy methods attempt to evaluate or improve the
+policy that is used to make decisions, whereas o↵-policy methods evaluate or improve
+a policy di↵erent from that used to generate the data

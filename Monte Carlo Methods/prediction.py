@@ -1,13 +1,18 @@
 import numpy as np
 import gym
-env = gym.make('Blackjack-v0')
-obs = env.reset()
+from collections import defaultdict
+import plotutils
+import matplotlib
 
-SHAPE = (22, 11, 2)
-V = np.zeros(SHAPE)
-policy = np.ones(SHAPE)
+matplotlib.style.use('ggplot')
+
+env = gym.make('Blackjack-v0')
+
+V = defaultdict(float)
+ret_sum = defaultdict(float)
+ret_count = defaultdict(float)
+policy = np.ones((22, 11, 2))
 policy[-2:] = policy[-2:] * 0
-R = {}
 
 def gen_episode(policy):
     s = env.reset()
@@ -15,25 +20,22 @@ def gen_episode(policy):
     while True:
         a = round(policy[tuple(map(int, s))])
         (sp, r, done, _) = env.step(a)
-        episode.append((tuple(map(int, s)), a, r))
+        episode.append((s, a, r))
         s = sp
         if done:
             break
     return episode
 
 
-for x in range(100000):
+for x in range(10000):
     episode = gen_episode(policy)
-    print(episode)
     first_occur = []
-    G = 0
+    _, _, G = episode[len(episode)-1]
     for s, a, r in episode:
-        G += r
-        if s not in first_occur:
+        if s not in first_occur and s[0] > 11:
             first_occur.append(s)
-            if s in R:
-                R[s].append(G)
-            else:
-                R[s] = [G]
-            V[s] = sum(R[s])/len(R[s])
-  
+            ret_sum[s] += G
+            ret_count[s] += 1
+            V[s] = ret_sum[s]/ret_count[s]
+ 
+plotutils.plot_value_function(V, title="10,000 Steps")
