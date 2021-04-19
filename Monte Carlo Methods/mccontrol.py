@@ -11,17 +11,20 @@ env = gym.make('Blackjack-v0')
 Q = defaultdict(lambda: np.zeros(2))
 ret_sum = defaultdict(float)
 ret_count = defaultdict(float)
-# policy = defaultdict(lambda: np.zeros(2))
 epsilon = 0.1
 policy = np.ones((22, 11, 2, 2))
-policy[-2:] = policy[-2:] * 0
+policy = np.array([obs + [-1, 0] if i <21 else obs + [0, -1] for i, obs in enumerate(policy)])
 action_space = 2
+
 
 def update_policy(policy, s, A):
     policy[s][A] = 1 - epsilon + epsilon/action_space
     policy[s][1-A] = epsilon/action_space
    
-get_action = lambda s: round(np.random.choice([0,1], p=policy[s]))
+
+def get_action(s):
+    return round(np.random.choice([0,1], p=policy[s]))
+
 
 def gen_episode(policy):
     s = env.reset()
@@ -36,7 +39,7 @@ def gen_episode(policy):
     return episode
 
 
-for x in range(10000):
+for x in range(500000):
     episode = gen_episode(policy)
     first_occur = []
     _, _, G = episode[len(episode)-1]
@@ -48,4 +51,12 @@ for x in range(10000):
             Q[s][a] = ret_sum[s]/ret_count[s]
             A = np.argmax(Q[s])
             update_policy(policy, s, A)
-# plotutils.plot_value_function(Q, title="10,000 Steps")
+
+
+# For plotting: Create value function from action-value function
+# by picking the best action at each state
+V = defaultdict(float)
+for state, actions in Q.items():
+    action_value = np.max(actions)
+    V[state] = action_value
+plotutils.plot_value_function(V, title="Optimal Value Function")
