@@ -1,0 +1,16 @@
+How can experience with a limited subset of the state space be usefully
+generalized to produce a good approximation over a much larger subset?
+
+generalization often called function approximation(FA) takes examples from a desired function (e.g., a value function) and attempts
+to generalize from them to construct an approximation of the entire function
+(FA) instance of supervised learning, the primary topic studied in machine
+learning, artificial neural networks, pattern recognition, and statistical curve fitting
+
+kthe approximate value function is represented not as a table but as a
+parameterized functional form with weight vector w 2 Rd.
+
+updating at s generalizes, many other states are changed as well
+
+learning be able to occur online,
+
+target estimate
